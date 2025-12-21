@@ -13,7 +13,11 @@
     <modules>
         <module>services/api-gateway</module>
         <module>services/llm-orchestrator</module>
+        <module>services/openai-adapter</module>
+        <module>services/gemini-adapter</module>
     </modules>
+
+
 
 
     <properties>

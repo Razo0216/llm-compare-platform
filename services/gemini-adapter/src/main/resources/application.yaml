@@ -1,0 +1,12 @@
+server:
+  port: 9992
+
+spring:
+  application:
+    name: gemini-adapter
+
+management:
+  endpoints:
+    web:
+      exposure:
+        include: health,info

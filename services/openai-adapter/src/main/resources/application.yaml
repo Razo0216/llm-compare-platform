@@ -1,0 +1,12 @@
+server:
+  port: 9991
+
+spring:
+  application:
+    name: openai-adapter
+
+management:
+  endpoints:
+    web:
+      exposure:
+        include: health,info
