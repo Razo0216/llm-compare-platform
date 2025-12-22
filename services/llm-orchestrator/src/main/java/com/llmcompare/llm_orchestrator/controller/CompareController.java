@@ -2,6 +2,7 @@ package com.llmcompare.llm_orchestrator.controller;
 
 import com.llmcompare.llm_orchestrator.api.CompareRequest;
 import com.llmcompare.llm_orchestrator.api.CompareResponse;
+import com.llmcompare.llm_orchestrator.api.ProviderResult;
 import com.llmcompare.llm_orchestrator.service.CompareService;
 import org.springframework.web.bind.annotation.*;
 import reactor.core.publisher.Mono;
@@ -22,17 +23,27 @@ public class CompareController {
     @PostMapping("/compare")
     public Mono<CompareResponse> compare(@RequestBody CompareRequest request) {
 
-        var openAiCall = service.callProvider(
-                "OPENAI",
-                "http://localhost:9991/openai",   // stub
-                request.prompt()
-        );
+        Mono<ProviderResult> openAiCall =
+                service.callOpenAi(request.prompt())
+                        .onErrorResume(ex ->
+                                Mono.just(new ProviderResult(
+                                        "OPENAI",
+                                        "FAILED",
+                                        "Controller fallback: " + ex.getClass().getSimpleName(),
+                                        0
+                                ))
+                        );
 
-        var geminiCall = service.callProvider(
-                "GEMINI",
-                "http://localhost:9992/gemini",   // stub
-                request.prompt()
-        );
+        Mono<ProviderResult> geminiCall =
+                service.callGemini(request.prompt())
+                        .onErrorResume(ex ->
+                                Mono.just(new ProviderResult(
+                                        "GEMINI",
+                                        "FAILED",
+                                        "Controller fallback: " + ex.getClass().getSimpleName(),
+                                        0
+                                ))
+                        );
 
         return Mono.zip(openAiCall, geminiCall)
                 .map(tuple -> new CompareResponse(

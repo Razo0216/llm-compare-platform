@@ -8,6 +8,7 @@ public class OpenAiController {
 
     @PostMapping("/openai")
     public Mono<String> callOpenAi(@RequestBody String prompt) {
+
         return Mono.just("OPENAI response for prompt: " + prompt);
     }
 }

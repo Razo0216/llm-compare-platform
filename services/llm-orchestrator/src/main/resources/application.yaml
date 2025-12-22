@@ -4,6 +4,35 @@ server:
 spring:
   application:
     name: llm-orchestrator
+resilience4j:
+  circuitbreaker:
+    instances:
+      openai:
+        slidingWindowSize: 10
+        minimumNumberOfCalls: 5
+        failureRateThreshold: 50
+        waitDurationInOpenState: 10s
+      gemini:
+        slidingWindowSize: 10
+        minimumNumberOfCalls: 5
+        failureRateThreshold: 50
+        waitDurationInOpenState: 10s
+
+  retry:
+    instances:
+      openai:
+        maxAttempts: 2
+        waitDuration: 500ms
+      gemini:
+        maxAttempts: 2
+        waitDuration: 500ms
+
+#  timelimiter:
+#    instances:
+#      openai:
+#        timeoutDuration: 2s
+#      gemini:
+#        timeoutDuration: 2s
 
 management:
   endpoints:
