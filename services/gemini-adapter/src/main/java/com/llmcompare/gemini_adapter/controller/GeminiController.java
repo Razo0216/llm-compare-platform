@@ -9,7 +9,6 @@ public class GeminiController {
     @PostMapping("/gemini")
     public Mono<String> callGemini(@RequestBody String prompt) {
 
-        return  Mono.error(new RuntimeException("Error processing request: " ));
-                //Mono.just("GEMINI response for prompt: " + prompt);
+        return  Mono.just("GEMINI response for prompt: " + prompt);
     }
 }
