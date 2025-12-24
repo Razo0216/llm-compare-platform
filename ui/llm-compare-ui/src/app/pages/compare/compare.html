@@ -1,0 +1,26 @@
+<h1>LLM Compare</h1>
+
+<textarea
+  [(ngModel)]="prompt"
+  placeholder="Enter your prompt..."
+  rows="5"
+  cols="60">
+</textarea>
+
+<br /><br />
+
+<button (click)="compare()" [disabled]="loading">
+  {{ loading ? 'Comparing...' : 'Compare' }}
+</button>
+
+<hr />
+
+<div class="results" *ngIf="results.length">
+  <div class="card" *ngFor="let r of results">
+    <h3>{{ r.provider }}</h3>
+    <p>Status: {{ r.status }}</p>
+    <p>Latency: {{ r.latencyMs }} ms</p>
+    <pre>{{ r.response }}</pre>
+    <hr />
+  </div>
+</div>

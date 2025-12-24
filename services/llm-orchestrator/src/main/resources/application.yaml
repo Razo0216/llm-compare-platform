@@ -43,3 +43,15 @@ management:
     health:
       show-details: always
 
+llm:
+  providers:
+    openai:
+      base-url: https://api.openai.com
+      enabled: true
+      mock: false        # keep true for now
+      model: gpt-4o-mini
+      timeout-ms: 8000
+    gemini:
+      base-url: http://localhost:9992
+      enabled: true
+      mock: true
