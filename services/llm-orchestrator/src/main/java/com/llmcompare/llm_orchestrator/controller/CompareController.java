@@ -4,6 +4,7 @@ import com.llmcompare.llm_orchestrator.api.CompareRequest;
 import com.llmcompare.llm_orchestrator.api.CompareResponse;
 import com.llmcompare.llm_orchestrator.api.ProviderResult;
 import com.llmcompare.llm_orchestrator.service.CompareService;
+
 import org.springframework.web.bind.annotation.*;
 import reactor.core.publisher.Mono;
 
@@ -11,7 +12,7 @@ import java.util.List;
 import java.util.UUID;
 
 @RestController
-@RequestMapping("/internal")
+@RequestMapping("/compare")
 public class CompareController {
 
     private final CompareService service;
@@ -20,7 +21,7 @@ public class CompareController {
         this.service = service;
     }
 
-    @PostMapping("/compare")
+    @PostMapping
     public Mono<CompareResponse> compare(@RequestBody CompareRequest request) {
 
         Mono<ProviderResult> openAiCall =

@@ -2,21 +2,29 @@ server:
   port: 8081
 
 spring:
+  main:
+    allow-bean-definition-overriding: true
   application:
     name: llm-orchestrator
+  security:
+    oauth2:
+      resourceserver:
+        jwt:
+          issuer-uri: http://localhost:8090/realms/llm-openai-gemini-compare
+
 resilience4j:
   circuitbreaker:
     instances:
       openai:
-        slidingWindowSize: 10
+        slidingWindowSize: 20
         minimumNumberOfCalls: 5
         failureRateThreshold: 50
-        waitDurationInOpenState: 10s
+        waitDurationInOpenState: 300000s
       gemini:
-        slidingWindowSize: 10
+        slidingWindowSize: 20
         minimumNumberOfCalls: 5
         failureRateThreshold: 50
-        waitDurationInOpenState: 10s
+        waitDurationInOpenState: 300000s
 
   retry:
     instances:
@@ -27,12 +35,12 @@ resilience4j:
         maxAttempts: 2
         waitDuration: 500ms
 
-#  timelimiter:
-#    instances:
-#      openai:
-#        timeoutDuration: 2s
-#      gemini:
-#        timeoutDuration: 2s
+  timelimiter:
+    instances:
+      openai:
+        timeoutDuration: 500s
+      gemini:
+        timeoutDuration: 500s
 
 management:
   endpoints:
@@ -50,8 +58,10 @@ llm:
       enabled: true
       mock: false        # keep true for now
       model: gpt-4o-mini
-      timeout-ms: 8000
+      timeout-ms: 800000
     gemini:
-      base-url: http://localhost:9992
+      base-url: https://generativelanguage.googleapis.com
       enabled: true
-      mock: true
+      mock: false
+      model: gemini-2.5-flash
+      timeout-ms: 800000

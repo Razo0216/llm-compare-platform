@@ -4,34 +4,38 @@ server:
 spring:
   application:
     name: api-gateway
+  security:
+    oauth2:
+      resourceserver:
+        jwt:
+          issuer-uri: http://localhost:8090/realms/llm-openai-gemini-compare
+
 
 
   cloud:
     gateway:
-      globalcors:
-        corsConfigurations:
-          '[/**]':
-            allowedOrigins:
-              - "http://localhost:4200"
-            allowedMethods:
-              - GET
-              - POST
-              - PUT
-              - DELETE
-              - OPTIONS
-            allowedHeaders:
-              - "*"
-            allowCredentials: true
+      default-filters:
+        # keeps original host + headers
+        - PreserveHostHeader
       routes:
-        - id: compare-route
+        - id: llm-orchestrator
           uri: http://localhost:8081
           predicates:
-            - Path=/v1/compare
+            - Path=/v1/compare/**
           filters:
-            - RewritePath=/v1/compare, /internal/compare
+            # safest rewrite (handles /v1/compare and /v1/compare/anything)
+            - RewritePath=/v1/compare(?<segment>/?.*), /compare${segment}
+
+        - id: llm-orchestrator-actuator
+          uri: http://localhost:8081
+          predicates:
+            - Path=/actuator/llm-orchestrator/**
+          filters:
+            - RewritePath=/actuator/llm-orchestrator/(?<segment>.*), /actuator/${segment}
 
 management:
   endpoints:
     web:
       exposure:
-        include: health,info,metrics
+        include: health,info,metrics,prometheus
+
