@@ -19,12 +19,12 @@ resilience4j:
         slidingWindowSize: 20
         minimumNumberOfCalls: 5
         failureRateThreshold: 50
-        waitDurationInOpenState: 300000s
+        waitDurationInOpenState: 30s
       gemini:
         slidingWindowSize: 20
         minimumNumberOfCalls: 5
         failureRateThreshold: 50
-        waitDurationInOpenState: 300000s
+        waitDurationInOpenState: 30s
 
   retry:
     instances:
@@ -34,13 +34,6 @@ resilience4j:
       gemini:
         maxAttempts: 2
         waitDuration: 500ms
-
-  timelimiter:
-    instances:
-      openai:
-        timeoutDuration: 500s
-      gemini:
-        timeoutDuration: 500s
 
 management:
   endpoints:
@@ -56,12 +49,17 @@ llm:
     openai:
       base-url: https://api.openai.com
       enabled: true
-      mock: false        # keep true for now
+      mock: false
       model: gpt-4o-mini
-      timeout-ms: 800000
+      timeout-ms: 8000
+      api:
+        key: ${OPENAI_API_KEY}
+
     gemini:
       base-url: https://generativelanguage.googleapis.com
       enabled: true
       mock: false
       model: gemini-2.5-flash
-      timeout-ms: 800000
+      timeout-ms: 8000
+      api:
+        key: ${GEMINI_API_KEY}
