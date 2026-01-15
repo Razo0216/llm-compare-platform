@@ -2,8 +2,8 @@ package com.llmcompare.llm_orchestrator.config;
 
 import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.context.annotation.Primary;
+import org.springframework.stereotype.Component;
 
-@Primary
 @ConfigurationProperties(prefix = "llm")
 public class LlmProviderProperties {
 
@@ -16,6 +16,10 @@ public class LlmProviderProperties {
     public void setProviders(Providers providers) {
         this.providers = providers;
     }
+
+    // =====================================================
+    // NESTED CLASSES
+    // =====================================================
 
     public static class Providers {
         private Provider openai;
@@ -39,10 +43,15 @@ public class LlmProviderProperties {
     }
 
     public static class Provider {
+
         private String baseUrl;
         private String model;
         private boolean enabled;
         private boolean mock;
+        private long timeoutMs;
+        private Api api;
+
+        // ---------- getters / setters ----------
 
         public String getBaseUrl() {
             return baseUrl;
@@ -50,6 +59,14 @@ public class LlmProviderProperties {
 
         public void setBaseUrl(String baseUrl) {
             this.baseUrl = baseUrl;
+        }
+
+        public String getModel() {
+            return model;
+        }
+
+        public void setModel(String model) {
+            this.model = model;
         }
 
         public boolean isEnabled() {
@@ -68,12 +85,32 @@ public class LlmProviderProperties {
             this.mock = mock;
         }
 
-        public String getModel() {
-            return model;
+        public long getTimeoutMs() {
+            return timeoutMs;
         }
 
-        public void setModel(String model) {
-            this.model = model;
+        public void setTimeoutMs(long timeoutMs) {
+            this.timeoutMs = timeoutMs;
+        }
+
+        public Api getApi() {
+            return api;
+        }
+
+        public void setApi(Api api) {
+            this.api = api;
+        }
+    }
+
+    public static class Api {
+        private String key;
+
+        public String getKey() {
+            return key;
+        }
+
+        public void setKey(String key) {
+            this.key = key;
         }
     }
 }

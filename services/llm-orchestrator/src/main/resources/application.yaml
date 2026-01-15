@@ -49,7 +49,7 @@ llm:
     openai:
       base-url: https://api.openai.com
       enabled: true
-      mock: false
+      mock: true
       model: gpt-4o-mini
       timeout-ms: 8000
       api:
@@ -58,7 +58,7 @@ llm:
     gemini:
       base-url: https://generativelanguage.googleapis.com
       enabled: true
-      mock: false
+      mock: true
       model: gemini-2.5-flash
       timeout-ms: 8000
       api:
