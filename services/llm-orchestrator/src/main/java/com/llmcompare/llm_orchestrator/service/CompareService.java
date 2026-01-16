@@ -13,6 +13,8 @@ import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
 import org.springframework.web.reactive.function.client.WebClient;
 import reactor.core.publisher.Mono;
+import org.springframework.security.access.prepost.PreAuthorize;
+
 
 import java.time.Duration;
 import java.util.List;
@@ -36,6 +38,7 @@ public class CompareService {
 
     @CircuitBreaker(name = "openai", fallbackMethod = "openAiFallback")
     @Retry(name = "openai")
+    @PreAuthorize("hasRole('USER')")
     public Mono<ProviderResult> callOpenAi(String prompt) {
         return isOpenAiMock()
                 ? callOpenAiMock(prompt)
@@ -44,6 +47,7 @@ public class CompareService {
 
     @CircuitBreaker(name = "gemini", fallbackMethod = "geminiFallback")
     @Retry(name = "gemini")
+    @PreAuthorize("hasRole('USER')")
     public Mono<ProviderResult> callGemini(String prompt) {
         return isGeminiMock()
                 ? callGeminiMock(prompt)
