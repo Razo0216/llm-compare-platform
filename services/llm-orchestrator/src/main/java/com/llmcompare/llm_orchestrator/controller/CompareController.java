@@ -4,6 +4,7 @@ import com.llmcompare.llm_orchestrator.api.CompareRequest;
 import com.llmcompare.llm_orchestrator.api.CompareResponse;
 import com.llmcompare.llm_orchestrator.api.ProviderResult;
 import com.llmcompare.llm_orchestrator.service.CompareService;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 import reactor.core.publisher.Mono;
 
@@ -21,13 +22,11 @@ public class CompareController {
     }
 
     @PostMapping
+    @PreAuthorize("hasRole('SERVICE')")
     public Mono<CompareResponse> compare(@RequestBody CompareRequest request) {
 
-        Mono<ProviderResult> openAiCall =
-                service.callOpenAi(request.prompt());
-
-        Mono<ProviderResult> geminiCall =
-                service.callGemini(request.prompt());
+        Mono<ProviderResult> openAiCall = service.callOpenAi(request.prompt());
+        Mono<ProviderResult> geminiCall = service.callGemini(request.prompt());
 
         return Mono.zip(openAiCall, geminiCall)
                 .map(tuple -> new CompareResponse(

@@ -8,6 +8,7 @@ import com.llmcompare.llm_orchestrator.openai.OpenAiRequest;
 import com.llmcompare.llm_orchestrator.openai.OpenAiResponse;
 import io.github.resilience4j.circuitbreaker.annotation.CircuitBreaker;
 import io.github.resilience4j.retry.annotation.Retry;
+import jakarta.annotation.PostConstruct;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
@@ -38,7 +39,6 @@ public class CompareService {
 
     @CircuitBreaker(name = "openai", fallbackMethod = "openAiFallback")
     @Retry(name = "openai")
-    @PreAuthorize("hasRole('USER')")
     public Mono<ProviderResult> callOpenAi(String prompt) {
         return isOpenAiMock()
                 ? callOpenAiMock(prompt)
@@ -47,7 +47,6 @@ public class CompareService {
 
     @CircuitBreaker(name = "gemini", fallbackMethod = "geminiFallback")
     @Retry(name = "gemini")
-    @PreAuthorize("hasRole('USER')")
     public Mono<ProviderResult> callGemini(String prompt) {
         return isGeminiMock()
                 ? callGeminiMock(prompt)
@@ -190,5 +189,14 @@ public class CompareService {
 
     private boolean isGeminiMock() {
         return properties.getProviders().getGemini().isMock();
+    }
+    @PostConstruct
+    public void checkConfig() {
+        String key = properties.getProviders().getOpenai().getApi().getKey();
+        if (key == null || key.equals("${OPENAI_API_KEY}")) {
+            System.err.println("CRITICAL: OpenAI API Key is NOT loaded!");
+        } else {
+            System.out.println("OpenAI Key loaded: " + key.substring(0, 5) + "...");
+        }
     }
 }
